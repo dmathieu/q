@@ -1,12 +1,15 @@
 package q
 
-// EventHandler is a generic interface to handle events
-// When an event is dequeued, it's `Handle` method will be called
-type EventHandler interface {
-	Handle([]byte) error
-}
-
 // Dequeue fetches an enqueued record and processes it
-func (q *Queue) Dequeue(handler EventHandler) error {
-	return nil
+func (q *Queue) Dequeue(handler func([]byte) error) error {
+	r, err := q.store.Retrieve()
+	if err != nil {
+		return nil
+	}
+
+	if r == nil {
+		return nil
+	}
+
+	return handler(r)
 }
