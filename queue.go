@@ -3,7 +3,11 @@ package q
 import "fmt"
 
 // A Datastore allows communicating with a data storage for storing and retrieving record
-type Datastore interface{}
+type Datastore interface {
+	Store([]byte) error
+	Retrieve() ([]byte, error)
+	Length() (int, error)
+}
 
 // A Queue allows enqueuing and listening to events
 type Queue struct {
