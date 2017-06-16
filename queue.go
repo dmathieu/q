@@ -1,5 +1,7 @@
 package q
 
+import "errors"
+
 // A Datastore allows communicating with a data storage for storing and retrieving record
 type Datastore interface {
 	Store([]byte) error
@@ -28,6 +30,10 @@ func New(options ...func(*Queue) error) (*Queue, error) {
 		if err := option(q); err != nil {
 			return nil, err
 		}
+	}
+
+	if q.store == nil {
+		return nil, errors.New("no data store specified")
 	}
 
 	return q, nil
