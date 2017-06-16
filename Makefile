@@ -1,7 +1,7 @@
 GO_FILES := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
 test: tidy
-	go test -race -v ./...
+	go test -race -v $(GO_FILES)
 
 tidy: goimports golint
 	test -z "$$(goimports -l -d $(GO_FILES) | tee /dev/stderr)"
