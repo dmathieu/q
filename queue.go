@@ -1,7 +1,5 @@
 package q
 
-import "fmt"
-
 // A Datastore allows communicating with a data storage for storing and retrieving record
 type Datastore interface {
 	Store([]byte) error
@@ -11,7 +9,6 @@ type Datastore interface {
 
 // A Queue allows enqueuing and listening to events
 type Queue struct {
-	name  string
 	store Datastore
 }
 
@@ -23,9 +20,9 @@ func DataStore(s Datastore) func(q *Queue) error {
 	}
 }
 
-// New initializes a new queue, with a name and options
-func New(name string, options ...func(*Queue) error) (*Queue, error) {
-	q := &Queue{name: name}
+// New initializes a new queue, with options
+func New(options ...func(*Queue) error) (*Queue, error) {
+	q := &Queue{}
 
 	for _, option := range options {
 		if err := option(q); err != nil {
@@ -34,8 +31,4 @@ func New(name string, options ...func(*Queue) error) (*Queue, error) {
 	}
 
 	return q, nil
-}
-
-func (q *Queue) workingQueue() string {
-	return fmt.Sprintf("%s:working", q.name)
 }

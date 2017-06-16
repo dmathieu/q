@@ -7,7 +7,7 @@ import (
 )
 
 func TestEnqueue(t *testing.T) {
-	q, err := New("default", DataStore(&MemoryStore{}))
+	q, err := New(DataStore(&MemoryStore{}))
 	assert.Nil(t, err)
 
 	err = q.Enqueue([]byte("hello world"))
