@@ -47,15 +47,11 @@ func (r *RedisStore) Retrieve() ([]byte, error) {
 }
 
 // Finish marks a task as finished
-func (r *RedisStore) Finish(d []byte, err error) error {
-	if err != nil {
-		return err
-	}
-
+func (r *RedisStore) Finish(d []byte) error {
 	conn := r.pool.Get()
 	defer conn.Close()
 
-	_, err = conn.Do("LREM", r.workingQueue(), 0, d)
+	_, err := conn.Do("LREM", r.workingQueue(), 0, d)
 	return err
 }
 

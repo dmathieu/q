@@ -23,8 +23,8 @@ func (m *MemoryStore) Retrieve() ([]byte, error) {
 }
 
 // Finish marks a task as finished
-func (m *MemoryStore) Finish(d []byte, err error) error {
-	return err
+func (m *MemoryStore) Finish(d []byte) error {
+	return nil
 }
 
 // Length returns the number of elements in the in-memory array

@@ -1,7 +1,6 @@
 package q
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -66,30 +65,16 @@ func TestRedisStoreFinish(t *testing.T) {
 	defer pool.Close()
 	m := RedisStore{"default", pool}
 
-	t.Run("with no error", func(t *testing.T) {
-		err := m.Store([]byte("hello"))
-		assert.Nil(t, err)
-		d, err := m.Retrieve()
-		assert.Nil(t, err)
+	err := m.Store([]byte("hello"))
+	assert.Nil(t, err)
 
-		assert.Nil(t, m.Finish(d, nil))
-		l, err := m.WorkingLength()
-		assert.Nil(t, err)
-		assert.Equal(t, 0, l)
-	})
+	d, err := m.Retrieve()
+	assert.Nil(t, err)
 
-	t.Run("with an error", func(t *testing.T) {
-		err := m.Store([]byte("hello"))
-		assert.Nil(t, err)
-		d, err := m.Retrieve()
-		assert.Nil(t, err)
-
-		err = errors.New("test error")
-		assert.Equal(t, err, m.Finish(d, err))
-		l, err := m.WorkingLength()
-		assert.Nil(t, err)
-		assert.Equal(t, 1, l)
-	})
+	assert.Equal(t, err, m.Finish(d))
+	l, err := m.WorkingLength()
+	assert.Nil(t, err)
+	assert.Equal(t, 0, l)
 }
 
 func TestRedisStoreLength(t *testing.T) {
