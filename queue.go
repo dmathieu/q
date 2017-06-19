@@ -44,8 +44,8 @@ func (q *Queue) Enqueue(c []byte) error {
 	return q.store.Store(c)
 }
 
-// Dequeue fetches an enqueued record and processes it
-func (q *Queue) Dequeue(handler func([]byte) error) error {
+// Handle fetches an enqueued record and processes it
+func (q *Queue) Handle(handler func([]byte) error) error {
 	r, err := q.store.Retrieve()
 	if err != nil {
 		return nil

@@ -31,7 +31,7 @@ func TestEnqueue(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func TestDequeue(t *testing.T) {
+func TestHandle(t *testing.T) {
 	q, err := New(DataStore(&MemoryStore{}))
 	assert.Nil(t, err)
 
@@ -40,7 +40,7 @@ func TestDequeue(t *testing.T) {
 		assert.Nil(t, err)
 
 		var data []byte
-		err = q.Dequeue(func(d []byte) error {
+		err = q.Handle(func(d []byte) error {
 			data = d
 			return nil
 		})
@@ -53,7 +53,7 @@ func TestDequeue(t *testing.T) {
 		assert.Nil(t, err)
 
 		var data []byte
-		err = q.Dequeue(func(d []byte) error {
+		err = q.Handle(func(d []byte) error {
 			data = d
 			return errors.New("an error occured")
 		})
@@ -63,7 +63,7 @@ func TestDequeue(t *testing.T) {
 
 	t.Run("with no record", func(t *testing.T) {
 		var data []byte
-		err = q.Dequeue(func(d []byte) error {
+		err = q.Handle(func(d []byte) error {
 			data = d
 			return nil
 		})
