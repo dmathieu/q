@@ -1,6 +1,7 @@
 package q
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -50,6 +51,17 @@ func TestRedisStoreStoringAndRetrieval(t *testing.T) {
 		assert.Nil(t, d)
 	})
 	cleanupRedis(t, pool)
+}
+
+func TestRedisStoreFinish(t *testing.T) {
+	pool := redisPool("redis://localhost:6379")
+	defer pool.Close()
+	m := RedisStore{"default", pool}
+
+	assert.Nil(t, m.Finish(nil))
+
+	err := errors.New("test error")
+	assert.Equal(t, err, m.Finish(err))
 }
 
 func TestRedisStoreLength(t *testing.T) {

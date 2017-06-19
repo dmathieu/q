@@ -42,6 +42,11 @@ func (r *RedisStore) Retrieve() ([]byte, error) {
 	return d, err
 }
 
+// Finish marks a task as finished
+func (r *RedisStore) Finish(err error) error {
+	return err
+}
+
 // Length returns the number of elements in the in-memory array
 func (r *RedisStore) Length() (int, error) {
 	conn := r.pool.Get()

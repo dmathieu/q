@@ -22,6 +22,11 @@ func (m *MemoryStore) Retrieve() ([]byte, error) {
 	return d, nil
 }
 
+// Finish marks a task as finished
+func (m *MemoryStore) Finish(err error) error {
+	return err
+}
+
 // Length returns the number of elements in the in-memory array
 func (m *MemoryStore) Length() (int, error) {
 	return len(m.data), nil

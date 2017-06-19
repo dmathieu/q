@@ -1,6 +1,7 @@
 package q
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -35,6 +36,15 @@ func TestMemoryStoreStoringAndRetrieval(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Nil(t, d)
 	})
+}
+
+func TestMemoryStoreFinish(t *testing.T) {
+	m := &MemoryStore{}
+
+	assert.Nil(t, m.Finish(nil))
+
+	err := errors.New("test error")
+	assert.Equal(t, err, m.Finish(err))
 }
 
 func TestMemoryStoreLength(t *testing.T) {
