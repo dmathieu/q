@@ -6,7 +6,7 @@ import "errors"
 type Datastore interface {
 	Store([]byte) error
 	Retrieve() ([]byte, error)
-	Finish(error) error
+	Finish([]byte, error) error
 	Length() (int, error)
 }
 
@@ -57,5 +57,5 @@ func (q *Queue) Handle(handler func([]byte) error) error {
 	}
 
 	err = handler(r)
-	return q.store.Finish(err)
+	return q.store.Finish(r, err)
 }

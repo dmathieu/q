@@ -23,7 +23,7 @@ func (m *MemoryStore) Retrieve() ([]byte, error) {
 }
 
 // Finish marks a task as finished
-func (m *MemoryStore) Finish(err error) error {
+func (m *MemoryStore) Finish(d []byte, err error) error {
 	return err
 }
 

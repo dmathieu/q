@@ -41,10 +41,10 @@ func TestMemoryStoreStoringAndRetrieval(t *testing.T) {
 func TestMemoryStoreFinish(t *testing.T) {
 	m := &MemoryStore{}
 
-	assert.Nil(t, m.Finish(nil))
+	assert.Nil(t, m.Finish([]byte("hello"), nil))
 
 	err := errors.New("test error")
-	assert.Equal(t, err, m.Finish(err))
+	assert.Equal(t, err, m.Finish([]byte("hello"), err))
 }
 
 func TestMemoryStoreLength(t *testing.T) {
