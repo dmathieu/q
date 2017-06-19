@@ -38,3 +38,22 @@ func New(options ...func(*Queue) error) (*Queue, error) {
 
 	return q, nil
 }
+
+// Enqueue enqueues a new entry to be processed
+func (q *Queue) Enqueue(c []byte) error {
+	return q.store.Store(c)
+}
+
+// Dequeue fetches an enqueued record and processes it
+func (q *Queue) Dequeue(handler func([]byte) error) error {
+	r, err := q.store.Retrieve()
+	if err != nil {
+		return nil
+	}
+
+	if r == nil {
+		return nil
+	}
+
+	return handler(r)
+}
