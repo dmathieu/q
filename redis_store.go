@@ -12,9 +12,9 @@ type RedisStore struct {
 	pool *redis.Pool
 }
 
-// NewRedisStore creates a new redis store instance
-func NewRedisStore(name string, pool *redis.Pool) *RedisStore {
-	return &RedisStore{name, pool}
+// RedisDataStore configures the queue with a redis data store
+func RedisDataStore(name string, pool *redis.Pool) func(q *Queue) error {
+	return DataStore(&RedisStore{name, pool})
 }
 
 func (r *RedisStore) queue() string {

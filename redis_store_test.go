@@ -10,19 +10,28 @@ func TestRedisStoreIsADatastore(t *testing.T) {
 	assert.Implements(t, (*Datastore)(nil), new(RedisStore))
 }
 
+func TestInitRedisDataStore(t *testing.T) {
+	pool := redisPool("redis://localhost:6379")
+	defer pool.Close()
+
+	q, err := New(RedisDataStore("default", pool))
+	assert.Nil(t, err)
+	assert.NotNil(t, q)
+}
+
 func TestRedisStoreStoringAndRetrieval(t *testing.T) {
 	pool := redisPool("redis://localhost:6379")
 	defer pool.Close()
 
 	t.Run("stores data", func(t *testing.T) {
-		m := NewRedisStore("default", pool)
+		m := RedisStore{"default", pool}
 		err := m.Store([]byte("hello"))
 		assert.Nil(t, err)
 	})
 	cleanupRedis(t, pool)
 
 	t.Run("retrieves data", func(t *testing.T) {
-		m := NewRedisStore("default", pool)
+		m := RedisStore{"default", pool}
 		err := m.Store([]byte("hello"))
 
 		d, err := m.Retrieve()
@@ -32,7 +41,7 @@ func TestRedisStoreStoringAndRetrieval(t *testing.T) {
 	cleanupRedis(t, pool)
 
 	t.Run("cannot retrieve data twice", func(t *testing.T) {
-		m := NewRedisStore("default", pool)
+		m := RedisStore{"default", pool}
 		err := m.Store([]byte("hello"))
 
 		m.Retrieve()
@@ -46,7 +55,7 @@ func TestRedisStoreStoringAndRetrieval(t *testing.T) {
 func TestRedisStoreLength(t *testing.T) {
 	pool := redisPool("redis://localhost:6379")
 	defer pool.Close()
-	m := NewRedisStore("default", pool)
+	m := RedisStore{"default", pool}
 
 	l, err := m.Length()
 	assert.Nil(t, err)
