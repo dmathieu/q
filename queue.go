@@ -8,6 +8,7 @@ type Datastore interface {
 	Retrieve() ([]byte, error)
 	Finish([]byte) error
 	Length() (int, error)
+	WorkingLength() (int, error)
 }
 
 // A Queue allows enqueuing and listening to events

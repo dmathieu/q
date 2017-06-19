@@ -1,8 +1,15 @@
 package q
 
+import (
+	"bytes"
+	"errors"
+	"fmt"
+)
+
 // A MemoryStore stores all records data into the memory
 type MemoryStore struct {
-	data [][]byte
+	data        [][]byte
+	workingData [][]byte
 }
 
 // Store add the provided data to the in-memory array
@@ -19,15 +26,37 @@ func (m *MemoryStore) Retrieve() ([]byte, error) {
 
 	d, a := m.data[len(m.data)-1], m.data[:len(m.data)-1]
 	m.data = a
+	m.workingData = append(m.workingData, d)
 	return d, nil
 }
 
 // Finish marks a task as finished
 func (m *MemoryStore) Finish(d []byte) error {
+	if len(m.workingData) == 0 {
+		return errors.New("no working data found")
+	}
+
+	var nw [][]byte
+	for _, v := range m.workingData {
+		if bytes.Compare(v, d) == 0 {
+			continue
+		}
+		nw = append(nw, v)
+	}
+	if len(nw) == len(m.workingData) {
+		return fmt.Errorf("unknown working record %q", d)
+	}
+	m.workingData = nw
+
 	return nil
 }
 
 // Length returns the number of elements in the in-memory array
 func (m *MemoryStore) Length() (int, error) {
 	return len(m.data), nil
+}
+
+// WorkingLength returns the number of elements being currently processed
+func (m *MemoryStore) WorkingLength() (int, error) {
+	return len(m.workingData), nil
 }

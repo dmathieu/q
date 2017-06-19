@@ -1,6 +1,7 @@
 package q
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -39,7 +40,31 @@ func TestMemoryStoreStoringAndRetrieval(t *testing.T) {
 
 func TestMemoryStoreFinish(t *testing.T) {
 	m := &MemoryStore{}
-	assert.Nil(t, m.Finish([]byte("hello")))
+
+	t.Run("no records", func(t *testing.T) {
+		assert.Equal(t, errors.New("no working data found"), m.Finish([]byte("world")))
+	})
+
+	t.Run("a known record", func(t *testing.T) {
+		m.Store([]byte("hello"))
+		d, _ := m.Retrieve()
+
+		l, err := m.WorkingLength()
+		assert.Nil(t, err)
+		assert.Equal(t, 1, l)
+		assert.Nil(t, m.Finish(d))
+
+		l, err = m.WorkingLength()
+		assert.Nil(t, err)
+		assert.Equal(t, 0, l)
+	})
+
+	t.Run("an unknown record", func(t *testing.T) {
+		m.Store([]byte("hello"))
+		m.Retrieve()
+
+		assert.Equal(t, errors.New("unknown working record \"world\""), m.Finish([]byte("world")))
+	})
 }
 
 func TestMemoryStoreLength(t *testing.T) {
