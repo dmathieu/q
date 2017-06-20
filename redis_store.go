@@ -1,9 +1,14 @@
 package q
 
 import (
+	"crypto/sha256"
 	"fmt"
 
 	"github.com/garyburd/redigo/redis"
+)
+
+const (
+	lockDuration = 60 // seconds
 )
 
 // A RedisStore stores all records data into redis
@@ -25,6 +30,13 @@ func (r *RedisStore) workingQueue() string {
 	return fmt.Sprintf("q:%s:queue:working", r.name)
 }
 
+func (r *RedisStore) lockKey(d []byte) string {
+	h := sha256.New()
+	h.Write(d)
+
+	return fmt.Sprintf("q:%s:lock:%s", r.name, h.Sum(nil))
+}
+
 // Store add the provided data to the in-memory array
 func (r *RedisStore) Store(d []byte) error {
 	conn := r.pool.Get()
@@ -43,6 +55,11 @@ func (r *RedisStore) Retrieve() ([]byte, error) {
 	if err == redis.ErrNil {
 		err = nil
 	}
+
+	_, err = conn.Do("SETEX", r.lockKey(d), lockDuration, d)
+	if err != nil {
+		return nil, err
+	}
 	return d, err
 }
 
@@ -51,7 +68,11 @@ func (r *RedisStore) Finish(d []byte) error {
 	conn := r.pool.Get()
 	defer conn.Close()
 
-	_, err := conn.Do("LREM", r.workingQueue(), 0, d)
+	conn.Send("MULTI")
+	conn.Send("LREM", r.workingQueue(), 0, d)
+	conn.Send("DEL", r.lockKey(d))
+	_, err := conn.Do("EXEC")
+
 	return err
 }
 
