@@ -34,7 +34,7 @@ func TestRedisStoreStoringAndRetrieval(t *testing.T) {
 		m := RedisStore{"default", pool}
 		err := m.Store([]byte("hello"))
 
-		l, err := m.WorkingLength()
+		l, err := m.Length("working")
 		assert.Nil(t, err)
 		assert.Equal(t, 0, l)
 
@@ -42,7 +42,7 @@ func TestRedisStoreStoringAndRetrieval(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, []byte("hello"), d)
 
-		l, err = m.WorkingLength()
+		l, err = m.Length("working")
 		assert.Nil(t, err)
 		assert.Equal(t, 1, l)
 	})
@@ -72,7 +72,7 @@ func TestRedisStoreFinish(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, err, m.Finish(d))
-	l, err := m.WorkingLength()
+	l, err := m.Length("working")
 	assert.Nil(t, err)
 	assert.Equal(t, 0, l)
 }
@@ -82,12 +82,12 @@ func TestRedisStoreLength(t *testing.T) {
 	defer pool.Close()
 	m := RedisStore{"default", pool}
 
-	l, err := m.Length()
+	l, err := m.Length("waiting")
 	assert.Nil(t, err)
 	assert.Equal(t, 0, l)
 	m.Store([]byte("hello"))
 
-	l, err = m.Length()
+	l, err = m.Length("waiting")
 	assert.Nil(t, err)
 	assert.Equal(t, 1, l)
 

@@ -52,11 +52,14 @@ func (m *MemoryStore) Finish(d []byte) error {
 }
 
 // Length returns the number of elements in the in-memory array
-func (m *MemoryStore) Length() (int, error) {
-	return len(m.data), nil
-}
+func (m *MemoryStore) Length(q string) (int, error) {
+	switch q {
+	case "waiting":
+		return len(m.data), nil
+	case "working":
+		return len(m.workingData), nil
+	default:
+		return 0, fmt.Errorf("unknown queue %s", q)
+	}
 
-// WorkingLength returns the number of elements being currently processed
-func (m *MemoryStore) WorkingLength() (int, error) {
-	return len(m.workingData), nil
 }

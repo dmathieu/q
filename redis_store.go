@@ -77,17 +77,19 @@ func (r *RedisStore) Finish(d []byte) error {
 }
 
 // Length returns the number of elements in the in-memory array
-func (r *RedisStore) Length() (int, error) {
+func (r *RedisStore) Length(q string) (int, error) {
 	conn := r.pool.Get()
 	defer conn.Close()
 
-	return redis.Int(conn.Do("LLEN", r.queue()))
-}
+	var queue string
+	switch q {
+	case "waiting":
+		queue = r.queue()
+	case "working":
+		queue = r.workingQueue()
+	default:
+		return 0, fmt.Errorf("unknown queue %s", q)
+	}
 
-// WorkingLength returns the number of elements currently being processed
-func (r *RedisStore) WorkingLength() (int, error) {
-	conn := r.pool.Get()
-	defer conn.Close()
-
-	return redis.Int(conn.Do("LLEN", r.workingQueue()))
+	return redis.Int(conn.Do("LLEN", queue))
 }

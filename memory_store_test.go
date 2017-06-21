@@ -49,12 +49,12 @@ func TestMemoryStoreFinish(t *testing.T) {
 		m.Store([]byte("hello"))
 		d, _ := m.Retrieve()
 
-		l, err := m.WorkingLength()
+		l, err := m.Length("working")
 		assert.Nil(t, err)
 		assert.Equal(t, 1, l)
 		assert.Nil(t, m.Finish(d))
 
-		l, err = m.WorkingLength()
+		l, err = m.Length("working")
 		assert.Nil(t, err)
 		assert.Equal(t, 0, l)
 	})
@@ -70,12 +70,12 @@ func TestMemoryStoreFinish(t *testing.T) {
 func TestMemoryStoreLength(t *testing.T) {
 	m := &MemoryStore{}
 
-	l, err := m.Length()
+	l, err := m.Length("waiting")
 	assert.Nil(t, err)
 	assert.Equal(t, 0, l)
 	m.Store([]byte("hello"))
 
-	l, err = m.Length()
+	l, err = m.Length("waiting")
 	assert.Nil(t, err)
 	assert.Equal(t, 1, l)
 }
