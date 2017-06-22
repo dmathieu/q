@@ -1,26 +1,14 @@
 package q
 
-import "errors"
+import (
+	"errors"
 
-// A Datastore allows communicating with a data storage for storing and retrieving record
-type Datastore interface {
-	Store([]byte) error
-	Retrieve() ([]byte, error)
-	Finish([]byte) error
-	Length(string) (int, error)
-}
+	"github.com/dmathieu/q/stores"
+)
 
 // A Queue allows enqueuing and listening to events
 type Queue struct {
-	store Datastore
-}
-
-// DataStore is used as an argument to `queue.New` to set a custom datastore
-func DataStore(s Datastore) func(q *Queue) error {
-	return func(q *Queue) error {
-		q.store = s
-		return nil
-	}
+	store stores.Datastore
 }
 
 // New initializes a new queue, with options

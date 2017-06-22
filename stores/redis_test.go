@@ -1,4 +1,4 @@
-package q
+package stores
 
 import (
 	"testing"
@@ -8,15 +8,6 @@ import (
 
 func TestRedisStoreIsADatastore(t *testing.T) {
 	assert.Implements(t, (*Datastore)(nil), new(RedisStore))
-}
-
-func TestInitRedisDataStore(t *testing.T) {
-	pool := redisPool("redis://localhost:6379")
-	defer pool.Close()
-
-	q, err := New(RedisDataStore("default", pool))
-	assert.Nil(t, err)
-	assert.NotNil(t, q)
 }
 
 func TestRedisStoreStoringAndRetrieval(t *testing.T) {

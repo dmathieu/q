@@ -1,4 +1,4 @@
-package q
+package stores
 
 import (
 	"crypto/sha256"
@@ -11,15 +11,15 @@ const (
 	lockDuration = 60 // seconds
 )
 
+// NewRedisStore creates a new instance of a redis store
+func NewRedisStore(name string, pool *redis.Pool) *RedisStore {
+	return &RedisStore{name, pool}
+}
+
 // A RedisStore stores all records data into redis
 type RedisStore struct {
 	name string
 	pool *redis.Pool
-}
-
-// RedisDataStore configures the queue with a redis data store
-func RedisDataStore(name string, pool *redis.Pool) func(q *Queue) error {
-	return DataStore(&RedisStore{name, pool})
 }
 
 func (r *RedisStore) queue() string {
