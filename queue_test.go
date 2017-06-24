@@ -72,3 +72,11 @@ func TestHandle(t *testing.T) {
 		assert.Nil(t, data)
 	})
 }
+
+func TestHouseKeeping(t *testing.T) {
+	q, err := New(DataStore(&stores.MemoryStore{}))
+	assert.Nil(t, err)
+
+	err = q.HouseKeeping()
+	assert.Nil(t, err)
+}

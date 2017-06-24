@@ -52,3 +52,8 @@ func (q *Queue) Handle(handler func([]byte) error) error {
 	}
 	return err
 }
+
+// HouseKeeping handles regular housekeeping tasks the datastore needs to perform
+func (q *Queue) HouseKeeping() error {
+	return q.store.HouseKeeping()
+}
