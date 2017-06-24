@@ -9,6 +9,7 @@ import (
 
 const (
 	lockDuration = 60 // seconds
+	recordsCount = 1000
 )
 
 // NewRedisStore creates a new instance of a redis store
@@ -92,4 +93,44 @@ func (r *RedisStore) Length(q string) (int, error) {
 	}
 
 	return redis.Int(conn.Do("LLEN", queue))
+}
+
+// HouseKeeping handles dead job, putting them back in the queue
+func (r *RedisStore) HouseKeeping() error {
+	conn := r.pool.Get()
+	defer conn.Close()
+	start := 0
+
+	for {
+		end := start + recordsCount
+
+		data, err := redis.ByteSlices(conn.Do("LRANGE", r.workingQueue(), start, end))
+		if err != nil {
+			return err
+		}
+		if len(data) == 0 {
+			return nil
+		}
+
+		for _, e := range data {
+			exists, err := conn.Do("GET", r.lockKey(e))
+			if err != nil {
+				return err
+			}
+
+			if exists == nil {
+				_, err = conn.Do("LREM", r.workingQueue(), 0, e)
+				if err != nil {
+					return err
+				}
+
+				err = r.Store(e)
+				if err != nil {
+					return err
+				}
+			} else {
+				start++
+			}
+		}
+	}
 }

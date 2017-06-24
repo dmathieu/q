@@ -6,4 +6,5 @@ type Datastore interface {
 	Retrieve() ([]byte, error)
 	Finish([]byte) error
 	Length(string) (int, error)
+	HouseKeeping() error
 }

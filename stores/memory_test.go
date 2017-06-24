@@ -79,3 +79,9 @@ func TestMemoryStoreLength(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 1, l)
 }
+
+func TestMemoryStoreHouseKeeping(t *testing.T) {
+	m := &MemoryStore{}
+	err := m.HouseKeeping()
+	assert.Nil(t, err)
+}

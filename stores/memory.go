@@ -63,3 +63,8 @@ func (m *MemoryStore) Length(q string) (int, error) {
 	}
 
 }
+
+// HouseKeeping handles dead jobs, putting them back in the queue
+func (m *MemoryStore) HouseKeeping() error {
+	return nil
+}
