@@ -57,3 +57,27 @@ func (q *Queue) Handle(handler func([]byte) error) error {
 func (q *Queue) HouseKeeping() error {
 	return q.store.HouseKeeping()
 }
+
+// Run starts a local worker
+func (q *Queue) Run(handler func([]byte) error, mc int) error {
+	c := make(chan struct{}, mc)
+	errCh := make(chan error)
+
+	for {
+		select {
+		case err := <-errCh:
+			return err
+		case c <- struct{}{}:
+			go func() {
+				defer func() {
+					<-c
+				}()
+
+				err := q.Handle(handler)
+				if err != nil {
+					errCh <- err
+				}
+			}()
+		}
+	}
+}

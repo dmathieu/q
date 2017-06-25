@@ -12,6 +12,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const (
+	maxConcurrency = 10
+)
+
 func main() {
 	redisURL := os.Getenv("REDIS_URL")
 	if redisURL == "" {
@@ -52,16 +56,10 @@ func main() {
 	}()
 
 	logrus.Info("Listening for events")
-	for {
-		err := queue.Handle(func(d []byte) error {
-			atomic.AddInt64(&totCount, 1)
-			return nil
-		})
-
-		if err != nil {
-			logrus.Error(err)
-		}
-	}
+	queue.Run(func(d []byte) error {
+		atomic.AddInt64(&totCount, 1)
+		return nil
+	}, maxConcurrency)
 }
 
 func redisPool(u *url.URL) *redis.Pool {
