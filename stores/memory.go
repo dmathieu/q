@@ -4,22 +4,30 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"sync"
 )
 
 // A MemoryStore stores all records data into the memory
 type MemoryStore struct {
 	data        [][]byte
 	workingData [][]byte
+	m           sync.Mutex
 }
 
 // Store add the provided data to the in-memory array
 func (m *MemoryStore) Store(d []byte) error {
+	m.m.Lock()
+	defer m.m.Unlock()
+
 	m.data = append(m.data, d)
 	return nil
 }
 
 // Retrieve pops the latest data from the in-memory array
 func (m *MemoryStore) Retrieve() ([]byte, error) {
+	m.m.Lock()
+	defer m.m.Unlock()
+
 	if len(m.data) == 0 {
 		return nil, nil
 	}
@@ -32,6 +40,9 @@ func (m *MemoryStore) Retrieve() ([]byte, error) {
 
 // Finish marks a task as finished
 func (m *MemoryStore) Finish(d []byte) error {
+	m.m.Lock()
+	defer m.m.Unlock()
+
 	if len(m.workingData) == 0 {
 		return errors.New("no working data found")
 	}
@@ -53,6 +64,9 @@ func (m *MemoryStore) Finish(d []byte) error {
 
 // Length returns the number of elements in the in-memory array
 func (m *MemoryStore) Length(q string) (int, error) {
+	m.m.Lock()
+	defer m.m.Unlock()
+
 	switch q {
 	case "waiting":
 		return len(m.data), nil
