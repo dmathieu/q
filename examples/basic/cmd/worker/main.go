@@ -27,19 +27,6 @@ func main() {
 	pool := redisPool(url)
 	queue, err := q.New(q.RedisDataStore("default", pool))
 
-	go func() {
-		for {
-			select {
-			case <-time.After(time.Minute):
-				logrus.Info("Performing house keeping")
-				err := queue.HouseKeeping()
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-		}
-	}()
-
 	logrus.Info("Listening for events")
 	queue.Run(func(d []byte) error {
 		logrus.Info(string(d))

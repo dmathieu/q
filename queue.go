@@ -2,6 +2,8 @@ package q
 
 import (
 	"errors"
+	"fmt"
+	"time"
 
 	"github.com/dmathieu/q/stores"
 )
@@ -63,6 +65,28 @@ func (q *Queue) Run(handler func([]byte) error, mc int) error {
 	c := make(chan struct{}, mc)
 	errCh := make(chan error)
 
+	go func() {
+		defer func() {
+			if x := recover(); x != nil {
+				err, ok := x.(error)
+				if !ok {
+					err = fmt.Errorf("%q", err)
+				}
+				errCh <- err
+			}
+		}()
+
+		for {
+			select {
+			case <-time.After(time.Minute):
+				err := q.HouseKeeping()
+				if err != nil {
+					errCh <- err
+				}
+			}
+		}
+	}()
+
 	for {
 		select {
 		case err := <-errCh:
@@ -70,6 +94,14 @@ func (q *Queue) Run(handler func([]byte) error, mc int) error {
 		case c <- struct{}{}:
 			go func() {
 				defer func() {
+					if x := recover(); x != nil {
+						err, ok := x.(error)
+						if !ok {
+							err = fmt.Errorf("%q", err)
+						}
+						errCh <- err
+					}
+
 					<-c
 				}()
 

@@ -27,18 +27,6 @@ func main() {
 	}
 	pool := redisPool(url)
 	queue, err := q.New(q.RedisDataStore("default", pool))
-
-	go func() {
-		for {
-			select {
-			case <-time.After(time.Minute):
-				err := queue.HouseKeeping()
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-		}
-	}()
 	var totCount int64
 
 	go func() {
