@@ -33,7 +33,14 @@ func TestEnqueue(t *testing.T) {
 }
 
 func TestHandle(t *testing.T) {
-	q, err := New(DataStore(&stores.MemoryStore{}))
+	var failure []byte
+	q, err := New(
+		DataStore(&stores.MemoryStore{}),
+		FailureHandler(func(d []byte) error {
+			failure = d
+			return nil
+		}),
+	)
 	assert.Nil(t, err)
 
 	t.Run("with no error", func(t *testing.T) {
@@ -47,6 +54,7 @@ func TestHandle(t *testing.T) {
 		})
 		assert.Nil(t, err)
 		assert.Equal(t, []byte("hello world"), data)
+		assert.Equal(t, []byte(nil), failure)
 	})
 
 	t.Run("with an error", func(t *testing.T) {
@@ -58,8 +66,9 @@ func TestHandle(t *testing.T) {
 			data = d
 			return errors.New("an error occured")
 		})
-		assert.Equal(t, errors.New("an error occured"), err)
+		assert.Nil(t, err)
 		assert.Equal(t, []byte("hello world"), data)
+		assert.Equal(t, []byte("hello world"), failure)
 	})
 
 	t.Run("with no record", func(t *testing.T) {
