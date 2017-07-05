@@ -7,7 +7,7 @@ A Go background worker.
 ## How it works
 
 The pattern used is very similar to other background workers. You can enqueue data, which will be stored in a data store.  
-Then, a second process will listen for entries pushed to the data store and execute an hanler when it gets one.
+Then, a second process will listen for entries pushed to the data store and execute a handler when it gets one.
 
 ### Data Stores
 
