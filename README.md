@@ -50,7 +50,7 @@ Setup a queue object
 ```golang
 // queue, err := queue.New(DataStore(&stores.MemoryStore{}))
 queue, err := queue.New(queue.RedisDataStore("default", redisPool)) // redisPool is a redigo *redis.Pool
-``
+```
 
 Enqueueing a job uses the same api as the "basic" mode
 
