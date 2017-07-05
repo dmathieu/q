@@ -6,7 +6,7 @@ import (
 )
 
 // Run starts a local worker
-func (q *Queue) Run(handler func([]byte) error, mc int) error {
+func Run(queue *Queue, handler func([]byte) error, mc int) error {
 	c := make(chan struct{}, mc)
 	errCh := make(chan error)
 
@@ -14,7 +14,7 @@ func (q *Queue) Run(handler func([]byte) error, mc int) error {
 		select {
 		case <-time.After(time.Minute):
 			go func() {
-				err := q.HouseKeeping()
+				err := queue.HouseKeeping()
 				if err != nil {
 					errCh <- err
 				}
@@ -35,7 +35,7 @@ func (q *Queue) Run(handler func([]byte) error, mc int) error {
 					<-c
 				}()
 
-				err := q.Handle(handler)
+				err := queue.Handle(handler)
 				if err != nil {
 					errCh <- err
 				}

@@ -28,7 +28,7 @@ func main() {
 	queue, err := q.New(q.RedisDataStore("default", pool))
 
 	logrus.Info("Listening for events")
-	queue.Run(func(d []byte) error {
+	q.Run(queue, func(d []byte) error {
 		logrus.Info(string(d))
 		return nil
 	}, maxConcurrency)

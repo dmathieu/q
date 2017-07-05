@@ -11,13 +11,13 @@ import (
 )
 
 func TestRun(t *testing.T) {
-	q, _ := New(DataStore(&stores.MemoryStore{}))
+	queue, _ := New(DataStore(&stores.MemoryStore{}))
 
 	t.Run("with no error", func(t *testing.T) {
 		var mutex = &sync.Mutex{}
 		var received [][]byte
 		go func() {
-			err := q.Run(func(d []byte) error {
+			err := Run(queue, func(d []byte) error {
 				mutex.Lock()
 				defer mutex.Unlock()
 
@@ -27,8 +27,8 @@ func TestRun(t *testing.T) {
 			assert.Nil(t, err)
 		}()
 
-		q.Enqueue([]byte("hello"))
-		q.Enqueue([]byte("world"))
+		queue.Enqueue([]byte("hello"))
+		queue.Enqueue([]byte("world"))
 
 		time.Sleep(time.Millisecond)
 		mutex.Lock()
@@ -40,7 +40,7 @@ func TestRun(t *testing.T) {
 		var mutex = &sync.Mutex{}
 		var received [][]byte
 		go func() {
-			err := q.Run(func(d []byte) error {
+			err := Run(queue, func(d []byte) error {
 				mutex.Lock()
 				defer mutex.Unlock()
 
@@ -50,8 +50,8 @@ func TestRun(t *testing.T) {
 			assert.Nil(t, err)
 		}()
 
-		q.Enqueue([]byte("hello"))
-		q.Enqueue([]byte("world"))
+		queue.Enqueue([]byte("hello"))
+		queue.Enqueue([]byte("world"))
 
 		time.Sleep(time.Millisecond)
 		mutex.Lock()

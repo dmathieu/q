@@ -44,7 +44,7 @@ func main() {
 	}()
 
 	logrus.Info("Listening for events")
-	queue.Run(func(d []byte) error {
+	q.Run(queue, func(d []byte) error {
 		atomic.AddInt64(&totCount, 1)
 		return nil
 	}, maxConcurrency)
