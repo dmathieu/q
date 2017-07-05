@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/dmathieu/q/queue"
+	"github.com/dmathieu/q"
 	"github.com/garyburd/redigo/redis"
 	"github.com/sirupsen/logrus"
 )
@@ -25,7 +25,7 @@ func main() {
 		log.Fatalf("Invalid REDIS_URL: %s", err)
 	}
 	pool := redisPool(url)
-	queue, err := queue.New(queue.RedisDataStore("default", pool))
+	queue, err := q.NewQueue("default", pool)
 
 	for {
 		select {
