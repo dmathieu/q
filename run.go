@@ -3,10 +3,12 @@ package q
 import (
 	"fmt"
 	"time"
+
+	"github.com/dmathieu/q/queue"
 )
 
 // Run starts a local worker
-func Run(queue *Queue, handler func([]byte) error, mc int) error {
+func Run(queue *queue.Queue, handler func([]byte) error, mc int) error {
 	c := make(chan struct{}, mc)
 	errCh := make(chan error)
 

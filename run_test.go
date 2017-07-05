@@ -6,12 +6,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dmathieu/q/queue"
 	"github.com/dmathieu/q/stores"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestRun(t *testing.T) {
-	queue, _ := New(DataStore(&stores.MemoryStore{}))
+	queue, _ := queue.New(queue.DataStore(&stores.MemoryStore{}))
 
 	t.Run("with no error", func(t *testing.T) {
 		var mutex = &sync.Mutex{}
