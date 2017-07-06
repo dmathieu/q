@@ -4,11 +4,12 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/dmathieu/q/queue"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMemoryStoreIsADatastore(t *testing.T) {
-	assert.Implements(t, (*Datastore)(nil), new(MemoryStore))
+	assert.Implements(t, (*queue.Datastore)(nil), new(MemoryStore))
 }
 
 func TestMemoryStoreStoringAndRetrieval(t *testing.T) {

@@ -16,7 +16,7 @@ import (
 func TestRun(t *testing.T) {
 
 	t.Run("with no error", func(t *testing.T) {
-		queue, _ := queue.New(&stores.MemoryStore{})
+		queue, _ := queue.New(queue.DataStore(&stores.MemoryStore{}))
 
 		var mutex = &sync.Mutex{}
 		var received [][]byte
@@ -41,7 +41,7 @@ func TestRun(t *testing.T) {
 	})
 
 	t.Run("with an error", func(t *testing.T) {
-		queue, _ := queue.New(&stores.MemoryStore{})
+		queue, _ := queue.New(queue.DataStore(&stores.MemoryStore{}))
 
 		var mutex = &sync.Mutex{}
 		var received [][]byte

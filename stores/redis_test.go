@@ -4,11 +4,12 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/dmathieu/q/queue"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestRedisStoreIsADatastore(t *testing.T) {
-	assert.Implements(t, (*Datastore)(nil), new(RedisStore))
+	assert.Implements(t, (*queue.Datastore)(nil), new(RedisStore))
 }
 
 func TestRedisStoreStoringAndRetrieval(t *testing.T) {

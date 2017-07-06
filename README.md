@@ -20,7 +20,7 @@ In order to use Q, you will first need to setup a queue object.
 
 ```golang
 // queue, err := queue.New(&stores.MemoryStore{})
-queue, err := queue.New(queue.RedisDataStore("default", redisPool)) // redisPool is a redigo *redis.Pool
+queue, err := queue.New(stores.RedisDataStore("default", redisPool)) // redisPool is a redigo *redis.Pool
 ```
 
 You can then enqueue a job into that queue:
@@ -49,7 +49,7 @@ Setup a queue object, the same way you would do in "basic" mode
 
 ```golang
 // queue, err := queue.New(&stores.MemoryStore{})
-queue, err := queue.New(queue.RedisDataStore("default", redisPool)) // redisPool is a redigo *redis.Pool
+queue, err := queue.New(stores.RedisDataStore("default", redisPool)) // redisPool is a redigo *redis.Pool
 ```
 
 Enqueueing a job uses the same api as the "basic" mode

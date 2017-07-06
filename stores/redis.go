@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 
+	"github.com/dmathieu/q/queue"
 	"github.com/garyburd/redigo/redis"
 )
 
@@ -12,9 +13,9 @@ const (
 	recordsCount = 1000
 )
 
-// NewRedisStore creates a new instance of a redis store
-func NewRedisStore(name string, pool *redis.Pool) *RedisStore {
-	return &RedisStore{name, pool}
+// RedisDataStore configures the queue with a redis data store
+func RedisDataStore(name string, pool *redis.Pool) func(*queue.Queue) error {
+	return queue.DataStore(&RedisStore{name, pool})
 }
 
 // A RedisStore stores all records data into redis

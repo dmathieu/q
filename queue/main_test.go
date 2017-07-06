@@ -4,7 +4,6 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/dmathieu/q/stores"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +16,7 @@ func TestNew(t *testing.T) {
 	})
 
 	t.Run("with a datastore", func(t *testing.T) {
-		q, err := New(DataStore(&stores.MemoryStore{}))
+		q, err := New(DataStore(&fakeStore{}))
 
 		assert.Nil(t, err)
 		assert.NotNil(t, q)
@@ -25,7 +24,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestEnqueue(t *testing.T) {
-	q, err := New(DataStore(&stores.MemoryStore{}))
+	q, err := New(DataStore(&fakeStore{}))
 	assert.Nil(t, err)
 
 	err = q.Enqueue([]byte("hello world"))
@@ -35,7 +34,7 @@ func TestEnqueue(t *testing.T) {
 func TestHandle(t *testing.T) {
 	var failure []byte
 	q, err := New(
-		DataStore(&stores.MemoryStore{}),
+		DataStore(&fakeStore{}),
 		FailureHandler(func(d []byte) error {
 			failure = d
 			return nil
@@ -83,7 +82,7 @@ func TestHandle(t *testing.T) {
 }
 
 func TestHouseKeeping(t *testing.T) {
-	q, err := New(DataStore(&stores.MemoryStore{}))
+	q, err := New(DataStore(&fakeStore{}))
 	assert.Nil(t, err)
 
 	err = q.HouseKeeping()

@@ -2,13 +2,11 @@ package queue
 
 import (
 	"errors"
-
-	"github.com/dmathieu/q/stores"
 )
 
 // A Queue allows enqueuing and listening to events
 type Queue struct {
-	store          stores.Datastore
+	store          Datastore
 	failureHandler func([]byte) error
 }
 
