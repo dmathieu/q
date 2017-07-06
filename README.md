@@ -19,8 +19,8 @@ But as long as you implement the [DataStore Interface](stores/main.go), you coul
 In order to use Q, you will first need to setup a queue object.
 
 ```golang
-// queue, err := q.NewQueue("memory")
-queue, err := q.NewQueue("default", redisPool) // redisPool is a redigo *redis.Pool
+// queue, err := queue.New(&stores.MemoryStore{})
+queue, err := queue.New(queue.RedisDataStore("default", redisPool)) // redisPool is a redigo *redis.Pool
 ```
 
 You can then enqueue a job into that queue:
@@ -40,15 +40,15 @@ q.Run(queue, func(d []byte) error {
 
 ## "Expert" Mode
 
-The `NewQueue` and `Run` methods are shortcuts to make the usage of Q easier.  
+The `Run` methods is a shortcut to make the usage of Q easier.  
 You may want to implement your own worker loop though.
 
 You can then use the `q/queue` and `q/stores` packages.
 
-Setup a queue object
+Setup a queue object, the same way you would do in "basic" mode
 
 ```golang
-// queue, err := queue.New(DataStore(&stores.MemoryStore{}))
+// queue, err := queue.New(&stores.MemoryStore{})
 queue, err := queue.New(queue.RedisDataStore("default", redisPool)) // redisPool is a redigo *redis.Pool
 ```
 

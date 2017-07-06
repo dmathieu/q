@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewQueue(t *testing.T) {
+func TestNew(t *testing.T) {
 	t.Run("with no options", func(t *testing.T) {
 		q, err := New()
 
